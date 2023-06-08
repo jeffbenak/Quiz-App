@@ -1,0 +1,65 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	background-color: black !important;
+}
+
+#root {
+	height: 100%;
+}
+
+h1 {
+	color: white;
+}
+
+h3 {
+	color: rgba(255, 255, 255, 0.747);
+}
+
+h4 {
+	color: white;
+	font-family: 'Times New Roman', Times, serif;
+}
+
+button {
+	width: 100%;
+}
+
+.none {
+	display: none !important;
+}
+
+.zipinput {
+	margin-bottom: 10px;
+}
+
+.weatherbutton {
+	display: block;
+	margin-top: 30px;
+}
+
+.show {
+	display: flex !important;
+}
+
+.submit {
+	margin-top: 10px;
+}
+
+.error {
+	color: rgb(201, 20, 20);
+}
+
+.weathericon {
+	width: 60px;
+}
+
