@@ -13,6 +13,10 @@ body {
 	background-color: black !important;
 }
 
+p {
+	color: white;
+}
+
 #root {
 	height: 100%;
 }
@@ -44,11 +48,12 @@ button {
 
 .weatherbutton {
 	display: block;
-	margin-top: 30px;
+	margin-top: 8px;
 }
 
 .show {
-	display: flex !important;
+	display: block;
+	text-align: left;
 }
 
 .submit {
@@ -61,5 +66,11 @@ button {
 
 .weathericon {
 	width: 60px;
+}
+
+.forecast {
+	display: flex;
+	align-items: flex-start;
+	flex-direction: column;
 }
 

@@ -6,11 +6,16 @@ export default function Weather() {
 
   const [country, setCountry] = useState('');
   const [zip, setZip] = useState('');
+  const [zipButton, setZipButton] = useState(true);
   const [lon, setLon] = useState('');
   const [lat, setLat] = useState('');
+  const [city, setCity] = useState('');
   const [icon, setIcon] = useState('');
+  const [clearButton, setClearButton] = useState(false);
+  const [description, setDescription] = useState('');
   const [showLatLon, setShowLatLon] = useState(false);
-  const [showWeather, setShowWeather] = useState(false);
+  const [showWeatherButton, setShowWeatherButton] = useState(false);
+  const [current, setCurrent] = useState('');
   const [zipError, setZipError] = useState('');
 
   const APIKey = 'fbb08152a4c7efaee1be8de10432c3f7';
@@ -25,11 +30,15 @@ export default function Weather() {
 
   function clearAll() {
     setZip('');
+    setZipButton(true);
     setLon('');
     setLat('');
     setZipError('');
-    setShowWeather(false);
+    setIcon('');
+    setShowWeatherButton(false);
     setShowLatLon(false);
+    setCity('');
+    setCurrent('');
   }
 
    function Geocode() {
@@ -40,6 +49,8 @@ export default function Weather() {
     const lon = data['lon'];
     const lat = data['lat'];
     const code = data['cod'];
+    const city = data['name'];
+    console.log(city)
     if (code === '404') {
       setZipError('Invalid Zip');
       setLon('');
@@ -47,13 +58,15 @@ export default function Weather() {
     } else if (code === '400') {
       setZipError('Please Enter a Zip Code');
     } else {
+      setZipError('');
+      setZipButton(false);
       setLat(lat);
       setLon(lon);
-      setZipError('');
-      setShowWeather(true);
+      setShowWeatherButton(true);
       setShowLatLon(true);
+      setCity(city);
+      setClearButton(true);
     }
-    console.log(lon, lat);
     }).catch(error => console.log(error)
     );
    };
@@ -64,9 +77,22 @@ export default function Weather() {
     .then(data => {
          console.log(data);
          console.log(lat);
-         const weather = data['list'][0]['weather'][0]['icon'];
-         let icon = "https://openweathermap.org/img/wn/" + data['list'][0]['weather'][0]['icon'] + ".png";
+        //  const weather = data['list'][0]['weather'][0]['icon'];
+         const icon = "https://openweathermap.org/img/wn/" + data['list'][0]['weather'][0]['icon'] + ".png";
+         const sunrise = data['city']['sunrise'];
+         const sunset = data['city']['sunset'];
+         const date = new Date(sunset).toLocaleTimeString('en-US');
+         const city = data['city']['name'];
+         const current = data['list'][0]['weather'][0]['description'];
+        //  const hours = date.getHours();
+        //  const minutes = '0' + date.getMinutes();
+        //  const seconds = '0' + date.getSeconds();
+        //  const time = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
          setIcon(icon);
+         setShowWeatherButton(false);
+         const current2 = current.charAt(0).toUpperCase() + current.slice(1);
+         setCurrent(current2);
+         console.log(current2);
     })
     .catch(error => console.log(error)
     );
@@ -86,28 +112,34 @@ export default function Weather() {
           className="zipinput" 
           onChange={(event) => setZip(event.target.value)} 
         />
-        <Form.Control 
+        {/* <Form.Control 
           type="text" size="lg" placeholder="Enter Country"
           value={country}
-          className={showWeather ? "countrybox" : "none"}
+          className={showWeatherButton ? "countrybox" : "none"}
           onChange={(event) => setCountry(event.target.value)} 
-        />
+        /> */}
       </Form.Group>
-      {/* <h3>{zip}</h3> */}
-      <h3 className={showLatLon ? 'show' : 'none'}>Your Longitude: {lon}</h3>
-      <h3 className={showLatLon ? 'show' : 'none'}>Your Latitude: {lat}</h3>
       <p className="error">{zipError}</p>
+      {/* <h3 className={showLatLon ? 'show' : 'none'}>Your Longitude: {lon}</h3> */}
+      <h3 className={showLatLon ? 'show' : 'none'}>Your City: {city}</h3>
+      
+      <div className="forecast">
+      <p className={current ? 'show' : 'none'}>Weather Forecast:
       <img className="weathericon" src={icon}></img>
+      </p>
+      <p>{current}</p>
+      </div>
       </Form>
 
 
         </div>
 
-        <button className={showWeather ? "weatherbutton" : "none"} onClick={WeatherApi}>Click for Weather Foreacast</button>
+        
+        <button className={zipButton ? "submit" : "none"} onClick={() => {Geocode(); handleSubmit();}}>Submit Zip</button>
 
-        <button className="submit" onClick={() => {Geocode(); handleSubmit();}}>Submit Zip</button>
+        <button className={showWeatherButton ? "weatherbutton" : "none"} onClick={WeatherApi}>Click for Weather Foreacast</button>
 
-        <button onClick={clearAll}>Clear All</button>
+        <button className={clearButton ? "weatherbutton" : "none"} onClick={clearAll}>Clear All</button>
 
   
 
