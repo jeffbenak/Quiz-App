@@ -11,6 +11,7 @@ html {
 body {
 	height: 100%;
 	background-color: black !important;
+	color: white !important;
 }
 
 p {
@@ -23,10 +24,6 @@ p {
 
 h1 {
 	color: white;
-}
-
-h3 {
-	color: rgba(255, 255, 255, 0.747);
 }
 
 h4 {
@@ -42,8 +39,16 @@ button {
 	display: none !important;
 }
 
+.buttons {
+	padding-top: 20px;
+}
+
 .zipinput {
 	margin-bottom: 10px;
+}
+
+.city > h3 {
+	padding-top: 20px;
 }
 
 .weatherbutton {
@@ -72,5 +77,13 @@ button {
 	display: flex;
 	align-items: flex-start;
 	flex-direction: column;
+}
+
+.temptable {
+	margin-top: 30px;
+}
+
+.space {
+	padding-left: 50px;
 }
 
