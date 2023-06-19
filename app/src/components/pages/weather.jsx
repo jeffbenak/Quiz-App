@@ -4,20 +4,23 @@ import InputGroup from 'react-bootstrap/InputGroup';
 
 export default function Weather() {
 
+  const [zipButton, setZipButton] = useState(true);
+  const [clearButton, setClearButton] = useState(false);
+  const [showLatLon, setShowLatLon] = useState(false);
+  const [showWeatherButton, setShowWeatherButton] = useState(false);
+  const [tempTable, setTempTable] = useState(false);
   const [country, setCountry] = useState('');
   const [zip, setZip] = useState('');
-  const [zipButton, setZipButton] = useState(true);
   const [lon, setLon] = useState('');
   const [lat, setLat] = useState('');
   const [city, setCity] = useState('');
   const [icon, setIcon] = useState('');
-  const [clearButton, setClearButton] = useState(false);
   const [temperature, setTemperature] = useState('');
-  const [showLatLon, setShowLatLon] = useState(false);
-  const [showWeatherButton, setShowWeatherButton] = useState(false);
+  const [date, setDate] = useState('');
   const [current, setCurrent] = useState('');
+  const [currentSecond, setCurrentSecond] = useState('');
   const [zipError, setZipError] = useState('');
-  const [tempTable, setTempTable] = useState(false);
+  const [windSpeeds, setWindSpeeds] = useState('');
   
 
   const APIKey = 'fbb08152a4c7efaee1be8de10432c3f7';
@@ -81,29 +84,37 @@ export default function Weather() {
     .then(data => {
          console.log(data);
          console.log(lat);
-        //  const weather = data['list'][0]['weather'][0]['icon'];
 
+         // This line uses the icon link provided by openweather, and retrieves the icon that was returned from the api call. 
+         // The .png at the end is needed so the name matches the icon codes from openweather, and then the icon will show up properly depending on which code is returned.
          const icon = "https://openweathermap.org/img/wn/" + data['list'][0]['weather'][0]['icon'] + ".png";
-         const sunrise = data['city']['sunrise'];
-         const sunset = data['city']['sunset'];
-         const date = new Date(sunset).toLocaleTimeString('en-US');
-         const city = data['city']['name'];
+
          const current = data['list'][0]['weather'][0]['description'];
+         const current2 = current.charAt(0).toUpperCase() + current.slice(1);
+
          const temp = data['list'][0]['main']['temp'];
+         // Temperature is in kelvin, so here I convert the temperature to fahrenheit then use math.trunc to make it a whole number
          const temp1 = (temp-273.15) * 9/5 + 32;
          const temperature = Math.trunc(temp1);
-         const day2 = data['list'][6]['weather'][0]['description'];
-        //  const hours = date.getHours();
-        //  const minutes = '0' + date.getMinutes();
-        //  const seconds = '0' + date.getSeconds();
-        //  const time = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);1
+
+         const wind = data['list'][0]['wind']['speed'];
+        //  Wind speeds returned from the openweather api is in meters per second, so I multiple the number by 2.237 to convert it to miles per hour,
+        //  and also use math.trunc to make it a whole number
+         const wind1 = wind * 2.237;
+         const windSpeeds = Math.trunc(wind1);
+
+         const date = data['list'][0]['dt_txt'];
+         const secondCurrent = data['list'][1]['weather'][0]['description'];
+         const currentSecond = current.charAt(0).toUpperCase() + secondCurrent.slice(1);
          setIcon(icon);
          setTemperature(temperature);
          setShowWeatherButton(false);
          setTempTable(true);
-         const current2 = current.charAt(0).toUpperCase() + current.slice(1);
+         setDate(date);
+         setWindSpeeds(windSpeeds);
          setCurrent(current2);
-         console.log(current2);
+         setCurrentSecond(currentSecond);
+         console.log(date);
     })
     .catch(error => console.log(error)
     );
@@ -114,7 +125,10 @@ export default function Weather() {
 
         <div className="enter">
 
-        <Form>
+      <Form>
+        
+        <div className="zipform">
+
       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
         <Form.Label></Form.Label>
         <Form.Control 
@@ -123,36 +137,32 @@ export default function Weather() {
           className="zipinput" 
           onChange={(event) => setZip(event.target.value)} 
         />
-        {/* <Form.Control 
-          type="text" size="lg" placeholder="Enter Country"
-          value={country}
-          className={showWeatherButton ? "countrybox" : "none"}
-          onChange={(event) => setCountry(event.target.value)} 
-        /> */}
       </Form.Group>
-      <p className="error">{zipError}</p>
-      {/* <h3 className={showLatLon ? 'show' : 'none'}>Your Longitude: {lon}</h3> */}
-      <div className="city">
-      <h3 className={showLatLon ? 'show' : 'none'}>Your City: {city}</h3>
       </div>
+
+      <p className="error">{zipError}</p>
+      <div className='forecast'>
+      <h3 className={showLatLon ? 'show' : 'none'}>Your City: {city}</h3>
+
       
-      <div className="forecast">
       <h2 className={current ? 'show' : 'none'}>Weather Forecast:</h2>
 
 
-      <table className={tempTable ? 'show' : 'none'}>
+      <table className={tempTable ? 'show temptable' : 'none'}>
       <tr>
         <th>Description</th>
-        <th></th>
         <th>Temperature</th>
+        <th>Wind Speeds</th>
+        <th>Date/ Time</th>
       </tr>
       <tr>
-        <td>{current}</td>
-        <td className="space"></td>
+        <td>{current}<img className="weathericon" src={icon}></img></td>
         <td>{temperature} °F</td>
+        <td>{windSpeeds} mph</td>
+        <td>{date} PM</td>
       </tr>
       <tr>
-        <td><img className="weathericon" src={icon}></img></td>
+        <td>{currentSecond}</td>
       </tr>
       </table>
 

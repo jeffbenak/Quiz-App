@@ -40,7 +40,18 @@ button {
 }
 
 .buttons {
+	display: flex;
+	flex-direction: column;
 	padding-top: 20px;
+	width: 350px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.form-control {
+	width: 350px !important;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .zipinput {
@@ -52,12 +63,10 @@ button {
 }
 
 .weatherbutton {
-	display: block;
 	margin-top: 8px;
 }
 
 .show {
-	display: block;
 	text-align: left;
 }
 
@@ -75,15 +84,22 @@ button {
 
 .forecast {
 	display: flex;
-	align-items: flex-start;
+	width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+	align-items: center;
 	flex-direction: column;
 }
 
 .temptable {
 	margin-top: 30px;
+	padding: 15px;
+	padding-bottom: 10px;
 }
 
-.space {
-	padding-left: 50px;
+th, td {
+    border-width: 1px !important;
+	padding: 10px;
 }
+
 
