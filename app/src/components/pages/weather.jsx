@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Form from 'react-bootstrap/Form';
+import moment from 'moment';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 export default function Weather() {
@@ -15,12 +16,24 @@ export default function Weather() {
   const [lat, setLat] = useState('');
   const [city, setCity] = useState('');
   const [icon, setIcon] = useState('');
+  const [iconTwo, setIconTwo] = useState('');
+  const [iconThree, setIconThree] = useState('');
   const [temperature, setTemperature] = useState('');
+  const [temperature2, setTemperature2] = useState('');
+  const [temperature3, setTemperature3] = useState('');
   const [date, setDate] = useState('');
+  const [date2, setDate2] = useState('');
+  const [date3, setDate3] = useState('');
+  const [time, setTime] = useState('');
+  const [time2, setTime2] = useState('');
+  const [time3, setTime3] = useState('');
   const [current, setCurrent] = useState('');
   const [currentSecond, setCurrentSecond] = useState('');
+  const [currentThird, setCurrentThird] = useState('');
   const [zipError, setZipError] = useState('');
   const [windSpeeds, setWindSpeeds] = useState('');
+  const [windSpeeds2, setWindSpeeds2] = useState('');
+  const [windSpeeds3, setWindSpeeds3] = useState('');
   
 
   const APIKey = 'fbb08152a4c7efaee1be8de10432c3f7';
@@ -46,6 +59,7 @@ export default function Weather() {
     setCity('');
     setCurrent('');
     setTemperature('');
+    setClearButton(false);
   }
 
    function Geocode() {
@@ -88,32 +102,82 @@ export default function Weather() {
          // This line uses the icon link provided by openweather, and retrieves the icon that was returned from the api call. 
          // The .png at the end is needed so the name matches the icon codes from openweather, and then the icon will show up properly depending on which code is returned.
          const icon = "https://openweathermap.org/img/wn/" + data['list'][0]['weather'][0]['icon'] + ".png";
-
-         const current = data['list'][0]['weather'][0]['description'];
-         const current2 = current.charAt(0).toUpperCase() + current.slice(1);
+         const iconTwo = "https://openweathermap.org/img/wn/" + data['list'][1]['weather'][0]['icon'] + ".png";
+         const iconThree = "https://openweathermap.org/img/wn/" + data['list'][2]['weather'][0]['icon'] + ".png";
 
          const temp = data['list'][0]['main']['temp'];
          // Temperature is in kelvin, so here I convert the temperature to fahrenheit then use math.trunc to make it a whole number
          const temp1 = (temp-273.15) * 9/5 + 32;
          const temperature = Math.trunc(temp1);
 
-         const wind = data['list'][0]['wind']['speed'];
+         const temp2 = data['list'][1]['main']['temp'];
+         const tempTwo = (temp2-273.15) * 9/5 + 32;
+         const temperature2 = Math.trunc(tempTwo);
+
+         const temp3 = data['list'][2]['main']['temp'];
+         const tempThree = (temp3-273.15) * 9/5 + 32;
+         const temperature3 = Math.trunc(tempThree);
+
         //  Wind speeds returned from the openweather api is in meters per second, so I multiple the number by 2.237 to convert it to miles per hour,
         //  and also use math.trunc to make it a whole number
+         const wind = data['list'][0]['wind']['speed'];
          const wind1 = wind * 2.237;
          const windSpeeds = Math.trunc(wind1);
 
-         const date = data['list'][0]['dt_txt'];
+         const wind2 = data['list'][1]['wind']['speed'];
+         const windTwo = wind2 * 2.237;
+         const windSpeeds2 = Math.trunc(windTwo);
+
+         const wind3 = data['list'][2]['wind']['speed'];
+         const windThree = wind3 * 2.237;
+         const windSpeeds3 = Math.trunc(windThree);
+
+
+         const newDate = data['list'][0]['dt'];
+         const time = new Date(newDate * 1000);
+         const newTime = moment(time,'X').format('h:mm a').toUpperCase();
+         const newDate2 = time.toLocaleDateString('en-US');
+
+         const secondDate = data['list'][1]['dt'];
+         const time2 = new Date(secondDate * 1000);
+         const newTime2 = moment(time2,'X').format('h:mm a').toUpperCase();
+         const newDate3 = time2.toLocaleDateString('en-US');
+
+         const thirdDate = data['list'][2]['dt'];
+         const time3 = new Date(thirdDate * 1000);
+         const newTime3 = moment(time3,'X').format('h:mm a').toUpperCase();
+         const newDate4 = time3.toLocaleDateString('en-US');
+
+         
+         const current = data['list'][0]['weather'][0]['description'];
+         const current2 = current.charAt(0).toUpperCase() + current.slice(1);
+
          const secondCurrent = data['list'][1]['weather'][0]['description'];
-         const currentSecond = current.charAt(0).toUpperCase() + secondCurrent.slice(1);
+         const currentSecond = secondCurrent.charAt(0).toUpperCase() + secondCurrent.slice(1);
+   
+         const thirdCurrent = data['list'][2]['weather'][0]['description'];
+         const currentThird = thirdCurrent.charAt(0).toUpperCase() + thirdCurrent.slice(1);
+
          setIcon(icon);
+         setIconTwo(iconTwo);
+         setIconThree(iconThree);
          setTemperature(temperature);
+         setTemperature2(temperature2);
+         setTemperature3(temperature3);
          setShowWeatherButton(false);
          setTempTable(true);
-         setDate(date);
+         setDate(newDate2);
+         setDate2(newDate3);
+         setDate3(newDate4);
+         setTime(newTime);
+         setTime2(newTime2);
+         setTime3(newTime3)
          setWindSpeeds(windSpeeds);
+         setWindSpeeds2(windSpeeds2);
+         setWindSpeeds3(windSpeeds3);
          setCurrent(current2);
          setCurrentSecond(currentSecond);
+         setCurrentThird(currentThird);
          console.log(date);
     })
     .catch(error => console.log(error)
@@ -149,6 +213,7 @@ export default function Weather() {
 
 
       <table className={tempTable ? 'show temptable' : 'none'}>
+        <tbody>
       <tr>
         <th>Description</th>
         <th>Temperature</th>
@@ -159,11 +224,21 @@ export default function Weather() {
         <td>{current}<img className="weathericon" src={icon}></img></td>
         <td>{temperature} °F</td>
         <td>{windSpeeds} mph</td>
-        <td>{date} PM</td>
+        <td><p>{date}</p>{time}</td>
       </tr>
       <tr>
-        <td>{currentSecond}</td>
+        <td>{currentSecond}<img className="weathericon" src={iconTwo}></img></td>
+        <td>{temperature2} °F</td>
+        <td>{windSpeeds2} mph</td>
+        <td><p>{date2}</p>{time2}</td>
       </tr>
+      <tr>
+        <td>{currentThird}<img className="weathericon" src={iconThree}></img></td>
+        <td>{temperature3} °F</td>
+        <td>{windSpeeds3} mph</td>
+        <td><p>{date3}</p>{time3}</td>
+      </tr>
+      </tbody>
       </table>
 
       </div>
