@@ -9,7 +9,9 @@ export default function Weather() {
   const [clearButton, setClearButton] = useState(false);
   const [showLatLon, setShowLatLon] = useState(false);
   const [showWeatherButton, setShowWeatherButton] = useState(false);
+  const [weatherButton, setWeatherButton] = useState(false);
   const [tempTable, setTempTable] = useState(false);
+  const [fiveDayTable, setFiveDayTable] = useState(false);
   const [country, setCountry] = useState('');
   const [zip, setZip] = useState('');
   const [lon, setLon] = useState('');
@@ -18,22 +20,34 @@ export default function Weather() {
   const [icon, setIcon] = useState('');
   const [iconTwo, setIconTwo] = useState('');
   const [iconThree, setIconThree] = useState('');
+  const [day1Icon, setDay1Icon] = useState('');
+  const [day2Icon, setDay2Icon] = useState('');
   const [temperature, setTemperature] = useState('');
   const [temperature2, setTemperature2] = useState('');
   const [temperature3, setTemperature3] = useState('');
+  const [temperatureDayOne, setTemperatureDayOne] = useState('');
+  const [temperatureDayTwo, setTemperatureDayTwo] = useState('');
   const [date, setDate] = useState('');
   const [date2, setDate2] = useState('');
   const [date3, setDate3] = useState('');
+  const [day1Date, setDay1Date] = useState('');
+  const [day2Date, setDay2Date] = useState('');
   const [time, setTime] = useState('');
   const [time2, setTime2] = useState('');
   const [time3, setTime3] = useState('');
+  const [day1Time, setDay1Time] = useState('');
+  const [day2Time, setDay2Time] = useState('');
   const [current, setCurrent] = useState('');
   const [currentSecond, setCurrentSecond] = useState('');
   const [currentThird, setCurrentThird] = useState('');
+  const [day1Current, setDay1Current] = useState('');
+  const [day2Current, setDay2Current] = useState('');
   const [zipError, setZipError] = useState('');
   const [windSpeeds, setWindSpeeds] = useState('');
   const [windSpeeds2, setWindSpeeds2] = useState('');
   const [windSpeeds3, setWindSpeeds3] = useState('');
+  const [day1WindSpeeds, setday1WindSpeeds] = useState('');
+  const [day2WindSpeeds, setday2WindSpeeds] = useState('');
   
 
   const APIKey = 'fbb08152a4c7efaee1be8de10432c3f7';
@@ -51,6 +65,9 @@ export default function Weather() {
     setShowWeatherButton(false);
     setShowLatLon(false);
     setTempTable(false);
+    setFiveDayTable(false);
+    setClearButton(false);
+    setWeatherButton(false);
     setZip('');
     setLon('');
     setLat('');
@@ -59,7 +76,6 @@ export default function Weather() {
     setCity('');
     setCurrent('');
     setTemperature('');
-    setClearButton(false);
   }
 
    function Geocode() {
@@ -84,6 +100,7 @@ export default function Weather() {
       setLat(lat);
       setLon(lon);
       setShowWeatherButton(true);
+      setWeatherButton(true);
       setShowLatLon(true);
       setCity(city);
       setClearButton(true);
@@ -92,12 +109,11 @@ export default function Weather() {
     );
    };
 
-    function WeatherApi(value){
+    function WeatherApi(){
     fetch(weatherUrl)
     .then(res => res.json())
     .then(data => {
          console.log(data);
-         console.log(lat);
 
          // This line uses the icon link provided by openweather, and retrieves the icon that was returned from the api call. 
          // The .png at the end is needed so the name matches the icon codes from openweather, and then the icon will show up properly depending on which code is returned.
@@ -184,6 +200,71 @@ export default function Weather() {
     );
     };
 
+    function fiveDayWeather() {
+      fetch(weatherUrl)
+      .then(res => res.json())
+      .then(data => {
+           console.log(data);
+
+         const dayOneCurrent = data['list'][7]['weather'][0]['description'];
+         const day1Current = dayOneCurrent.charAt(0).toUpperCase() + dayOneCurrent.slice(1);
+         
+         const day1Icon = "https://openweathermap.org/img/wn/" + data['list'][7]['weather'][0]['icon'] + ".png";
+
+         const tempDay1 = data['list'][7]['main']['temp'];
+         const tempDayOne = (tempDay1-273.15) * 9/5 + 32;
+         const temperatureDayOne = Math.trunc(tempDayOne);
+
+         const dayOneWind = data['list'][7]['wind']['speed'];
+         const day1Wind = dayOneWind * 2.237;
+         const day1WindSpeeds = Math.trunc(day1Wind);
+
+         const dayOneDate = data['list'][7]['dt'];
+         const dayOneTime = new Date(dayOneDate * 1000);
+         const day1Time = moment(dayOneTime,'X').format('h:mm a').toUpperCase();
+         const day1Date = dayOneTime.toLocaleDateString('en-US');
+
+
+         const dayTwoCurrent = data['list'][15]['weather'][0]['description'];
+         const day2Current = dayTwoCurrent.charAt(0).toUpperCase() + dayTwoCurrent.slice(1);
+         
+         const day2Icon = "https://openweathermap.org/img/wn/" + data['list'][15]['weather'][0]['icon'] + ".png";
+
+         const tempDay2 = data['list'][7]['main']['temp'];
+         const tempDayTwo = (tempDay2-273.15) * 9/5 + 32;
+         const temperatureDayTwo = Math.trunc(tempDayTwo);
+
+         const dayTwoWind = data['list'][15]['wind']['speed'];
+         const day2Wind = dayTwoWind * 2.237;
+         const day2WindSpeeds = Math.trunc(day2Wind);
+
+         const dayTwoDate = data['list'][15]['dt'];
+         const dayTwoTime = new Date(dayTwoDate * 1000);
+         const day2Time = moment(dayTwoTime,'X').format('h:mm a').toUpperCase();
+         const day2Date = dayTwoTime.toLocaleDateString('en-US');
+
+
+        
+         setFiveDayTable(true);
+         setShowWeatherButton(false);
+         setDay1Icon(day1Icon);
+         setTemperatureDayOne(temperatureDayOne);
+         setDay1Date(day1Date);
+         setDay1Time(day1Time);
+         setday1WindSpeeds(day1WindSpeeds)
+         setDay1Current(day1Current);
+
+         setDay2Icon(day2Icon);
+         setTemperatureDayTwo(temperatureDayTwo);
+         setDay2Date(day2Date);
+         setDay2Time(day2Time);
+         setday2WindSpeeds(day2WindSpeeds)
+         setDay2Current(day2Current);
+
+    }
+      );
+  };
+
     return (
         <>
 
@@ -209,7 +290,7 @@ export default function Weather() {
       <h3 className={showLatLon ? 'show' : 'none'}>Your City: {city}</h3>
 
       
-      <h2 className={current ? 'show' : 'none'}>Weather Forecast:</h2>
+      <h2 className={current ? 'show' : 'none'}>6 Hour Weather Forecast:</h2>
 
 
       <table className={tempTable ? 'show temptable' : 'none'}>
@@ -241,6 +322,35 @@ export default function Weather() {
       </tbody>
       </table>
 
+
+
+      {/* FIVE DAY WEATHER FORECAST TABLE
+      ************************************
+      *************************************/ }
+
+      <table className={fiveDayTable ? 'show temptable' : 'none'}>
+        <tbody>
+      <tr>
+        <th>Description</th>
+        <th>Temperature</th>
+        <th>Wind Speeds</th>
+        <th>Date/ Time</th>
+      </tr>
+      <tr>
+        <td>{day1Current}<img className="weathericon" src={day1Icon}></img></td>
+        <td>{temperatureDayOne} °F</td>
+        <td>{day1WindSpeeds} mph</td>
+        <td><p>{day1Date}</p>{day1Time}</td>
+      </tr>
+      <tr>
+        <td>{day2Current}<img className="weathericon" src={day2Icon}></img></td>
+        <td>{temperatureDayTwo} °F</td>
+        <td>{day2WindSpeeds} mph</td>
+        <td><p>{day2Date}</p>{day2Time}</td>
+      </tr>
+      </tbody>
+      </table>
+
       </div>
       </Form>
 
@@ -252,7 +362,9 @@ export default function Weather() {
       
         <button className={zipButton ? "submit" : "none"} onClick={() => {Geocode(); handleSubmit();}}>Submit Zip</button>
 
-        <button className={showWeatherButton ? "weatherbutton" : "none"} onClick={WeatherApi}>Click for Weather Foreacast</button>
+        <button className={showWeatherButton ? "weatherbutton" : "none"} onClick={WeatherApi}>Generate Today's Weather Foreacast</button>
+
+        <button className={weatherButton ? "weatherbutton" : "none"} onClick={fiveDayWeather}>Generate Five Day Weather Forecast</button>
 
         <button className={clearButton ? "weatherbutton" : "none"} onClick={clearAll}>Clear All</button>
 
